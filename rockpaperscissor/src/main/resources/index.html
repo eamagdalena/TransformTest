@@ -1,0 +1,83 @@
+<html>
+
+<head>
+<title>Rock Paper Scissors</title>
+</head>
+
+<body>
+
+<p>Player Id: <label id="playerId">Fetching...</label></p>
+
+<p>Games won: <label id="wins">0</label></p>
+
+<form id="f">
+Your play:
+
+ <select id="move">
+  <option value="Rock">Rock</option>
+  <option value="Paper">Paper</option>
+  <option value="Scissors">Scissors</option>
+  <option value="Lizard">Lizard</option>
+  <option value="Spock">Spock</option>
+</select> 
+
+<input type="button" value="Rock Paper Scissors!!"  onclick="play()"/> 
+
+</form>
+
+<p>
+You <label id="outcome"></label> this round.
+</p>
+
+<p>
+AI's move was: <label id="aiMove"></label>
+</p>
+
+<script>
+
+var req = new XMLHttpRequest(); // defined above
+//Create the callback:
+req.onreadystatechange = function() {
+ if (req.readyState != 4) return; // Not there yet
+ if (req.status != 200) {
+  // Handle request failure here...
+  return;
+ }
+ 
+ // Request successful, read the response
+ var resp = req.responseText;
+ document.getElementById('playerId').innerHTML = resp;
+}
+
+req.open("GET", "http://localhost:8080/rps/start", true);
+req.send();
+
+function play() {
+	
+	var req = new XMLHttpRequest(); // defined above
+	//Create the callback:
+	req.onreadystatechange = function() {
+	 if (req.readyState != 4) return; // Not there yet
+	 if (req.status != 200) {
+	  // Handle request failure here...
+	  return;
+	 }
+	 
+	 // Request successful, read the response
+	 var resp = JSON.parse(req.responseText); 
+	 document.getElementById('outcome').innerHTML = resp.outcome; 
+	 document.getElementById('wins').innerHTML = resp.playerWins;
+	 document.getElementById('aiMove').innerHTML = resp.aiMove;
+	}
+
+	req.open("GET", "http://localhost:8080/rps/player/" + document.getElementById('playerId').textContent + "/play/" + document.getElementById('move').value, true);
+	req.send();
+	
+}
+
+
+</script>
+
+</body>
+
+</html>
